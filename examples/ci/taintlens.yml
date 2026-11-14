@@ -1,0 +1,26 @@
+# Copia este archivo a .github/workflows/taintlens.yml
+name: TaintLens
+on: [push, pull_request]
+
+permissions:
+  contents: read
+  security-events: write      # necesario para subir resultados a la pestaña Security
+
+jobs:
+  analisis:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Instalar TaintLens
+        run: pip install git+https://github.com/jaime73kz/taintlens.git
+      - name: Analizar (el informe SARIF se genera aunque haya hallazgos)
+        run: taintlens escanear . -f sarif -o taintlens.sarif --fallar-en nunca
+      - name: Subir a GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: taintlens.sarif
+      - name: Fallar el trabajo si hay algo grave
+        run: taintlens escanear . --fallar-en alta --resumido

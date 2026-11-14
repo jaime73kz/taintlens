@@ -1,0 +1,25 @@
+# Ejemplo de configuración. Cópialo a la raíz de tu proyecto como taintlens.toml
+[taintlens]
+excluir = ["migrations", "generado"]
+severidad_minima = "baja"
+fallar_en = "alta"
+reglas_desactivadas = []
+fuentes_archivo = false
+estricto = false
+
+# Una función de tu proyecto que devuelve datos que controla el usuario
+[[fuente]]
+tipo = "http"
+nombre = "miproyecto.entrada.leer_cuerpo"
+
+# Una función tuya que ejecuta SQL
+[[sumidero]]
+clase = "sql"
+nombre = "miproyecto.bd.ejecutar"
+args = [0]
+etiqueta = "consulta de mi capa de datos"
+
+# Una función tuya que limpia de verdad el dato
+[[saneador]]
+nombre = "miproyecto.seguridad.limpiar_nombre_archivo"
+clases = ["path"]

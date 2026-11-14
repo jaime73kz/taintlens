@@ -1,0 +1,10 @@
+# Copia esto en .pre-commit-config.yaml
+repos:
+  - repo: local
+    hooks:
+      - id: taintlens
+        name: TaintLens
+        entry: taintlens escanear --fallar-en alta --resumido
+        language: system
+        types: [python]
+        pass_filenames: false
